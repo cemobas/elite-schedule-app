@@ -11,6 +11,7 @@ import { EliteApi } from '../../shared/shared';
 export class TeamDetailPage {
   allGames: any[];
   dateFilter: string;
+  useDateFilter: false;
   games: any[];
   team: any;
   teamStanding: any;
@@ -64,6 +65,10 @@ export class TeamDetailPage {
   }
 
   dateChanged(){
-    this.games = _.filter(this.allGames, g=> moment(g.time).isSame(this.dateFilter, 'day'));
+    if (this.useDateFilter) {
+      this.games = _.filter(this.allGames, g=> moment(g.time).isSame(this.dateFilter, 'day'));
+    } else {
+      this.games = this.allGames;
+    }
   }
 }
