@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 import { GudikPage } from '../pages';
 import { EliteApi } from '../../shared/shared';
 
@@ -8,6 +9,8 @@ import { EliteApi } from '../../shared/shared';
   templateUrl: 'team-detail.page.html'
 })
 export class TeamDetailPage {
+  allGames: any[];
+  dateFilter: string;
   games: any[];
   team: any;
   teamStanding: any;
@@ -38,7 +41,8 @@ export class TeamDetailPage {
                       };
                   })
                   .value();
-                  
+    
+    this.allGames = this.games;
     this.teamStanding = _.find(this.tourneyData.standings, { 'teamId': this.team.id });
   }
 
@@ -57,5 +61,9 @@ export class TeamDetailPage {
   gameClicked($event, game){
     let sourceGame = this.tourneyData.games.find(g => g.id === game.gameId);
     this.nav.parent.parent.push(GudikPage, sourceGame);
-  }   
+  }
+
+  dateChanged(){
+    this.games = _.filter(this.allGames, g=> moment(g.time).isSame(this.dateFilter, 'day'));
+  }
 }
