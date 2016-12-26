@@ -10,6 +10,7 @@ import { EliteApi } from '../../shared/shared';
 export class TeamDetailPage {
   games: any[];
   team: any;
+  teamStanding: any;
   private tourneyData: any;
 
   constructor(
@@ -37,6 +38,8 @@ export class TeamDetailPage {
                       };
                   })
                   .value();
+                  
+    this.teamStanding = _.find(this.tourneyData.standings, { 'teamId': this.team.id });
   }
 
   getScoreDisplay(isTeam1, team1Score, team2Score) {
