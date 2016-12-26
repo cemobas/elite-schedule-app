@@ -64,6 +64,14 @@ export class TeamDetailPage {
     this.nav.parent.parent.push(GudikPage, sourceGame);
   }
 
+  getScoreWorL(game) {
+    return game.scoreDisplay ? game.scoreDisplay[0] : '';
+  }
+
+  getScoreDisplayBadgeClass(game) {
+    return game.scoreDisplay.indexOf('W:') === 0 ? 'primary' : 'danger';
+  }
+
   dateChanged(){
     if (this.useDateFilter) {
       this.games = _.filter(this.allGames, g=> moment(g.time).isSame(this.dateFilter, 'day'));
