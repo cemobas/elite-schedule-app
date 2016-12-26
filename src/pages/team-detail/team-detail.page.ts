@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { AlertController, NavController, NavParams } from 'ionic-angular';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { GudikPage } from '../pages';
@@ -11,13 +11,15 @@ import { EliteApi } from '../../shared/shared';
 export class TeamDetailPage {
   allGames: any[];
   dateFilter: string;
-  useDateFilter: false;
   games: any[];
+  isFollowing = false;
   team: any;
   teamStanding: any;
   private tourneyData: any;
+  useDateFilter = false;
 
   constructor(
+    private alertController: AlertController,
     private nav: NavController,
     private navParams: NavParams,
     private eliteApi: EliteApi) { }
@@ -77,6 +79,29 @@ export class TeamDetailPage {
       this.games = _.filter(this.allGames, g=> moment(g.time).isSame(this.dateFilter, 'day'));
     } else {
       this.games = this.allGames;
+    }
+  }
+
+  toggleFollow() {
+    if(this.isFollowing) {
+      let confirm = this.alertController.create({
+        title: 'Unfollow?',
+        message: 'Are you sure you want to unfollow?',
+        buttons: [
+          {
+            text: 'Yes',
+            handler: () => {
+              this.isFollowing = false;
+              // TODO: persist data
+            }
+          },
+          { text: 'No' }
+        ]
+      });
+      confirm.present();
+    } else {
+      this.isFollowing = true;
+      // TODO: persist data
     }
   }
 }
