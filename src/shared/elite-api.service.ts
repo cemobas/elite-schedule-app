@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from'@angular/http';
+import { Http } from'@angular/http';
 
 import 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -8,8 +8,9 @@ import { Observable } from 'rxjs/Observable';
 export class EliteApi {
     private baseUrl = 'https://elite-schedule-app-i2-3c553.firebaseio.com/';
     currentTourney: any = {};
-    
-    constructor(private http: Http) { }
+    private tourneyData = {};
+
+    constructor(public http: Http) { }
 
     getTournaments(){
         return new Promise(resolve => {
@@ -18,15 +19,28 @@ export class EliteApi {
         });
     }
 
-    getTournamentData(tourneyId) : Observable<any> {
+    getTournamentData(tourneyId, forceRefresh: boolean = false) : Observable<any> {
+        if (!forceRefresh && this.tourneyData[tourneyId]) {
+            this.currentTourney = this.tourneyData[tourneyId];
+            console.log('**no need to make HTTP call, just return the data'); 
+            return Observable.of(this.currentTourney);
+        }
+
+        // don't have data yet
+        console.log('**about to make HTTP call');
         return this.http.get(`${this.baseUrl}/tournaments-data/${tourneyId}.json`)
-            .map((response: Response) => {
-                this.currentTourney = response.json();
+            .map(response => {
+                this.tourneyData[tourneyId] = response.json();
+                this.currentTourney = this.tourneyData[tourneyId];
                 return this.currentTourney;
             });
     }
 
-    getCurrentTourney() {
+    getCurrentTourney(){
         return this.currentTourney;
+    }
+
+    refreshCurrentTourney(){
+        return this.getTournamentData(this.currentTourney.tournament.id, true); 
     }
 }

@@ -1,28 +1,38 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { TeamHomePage } from '../pages';
-import { EliteApi } from '../../shared/shared';
+import { LoadingController, NavController } from 'ionic-angular';
+import { TeamHomePage, TournamentsPage } from '../pages';
+import { EliteApi, UserSettings } from '../../shared/shared';
 
 @Component({
   templateUrl: 'gudik.page.html'
 })
 export class GudikPage {
-  game: any;
+
+    favourites: any[];
 
   constructor(
+    public loadingController: LoadingController,
     public nav: NavController,
-    public navParams: NavParams,
-    public eliteApi: EliteApi) {
-      this.game = this.navParams.data;
-    }
-
-  ionViewDidLoad(){
+    public eliteApi: EliteApi,
+    public userSettings: UserSettings) {
   }
 
-  teamTapped(teamId){
-    let tourneyData = this.eliteApi.getCurrentTourney();
-    let team = tourneyData.teams.find(t => t.id === teamId);
-    this.nav.push(TeamHomePage, team); 
+  favouriteTapped($event, favourite) {
+    let loader = this.loadingController.create({
+      content: 'Getting data...',
+      dismissOnPageChange: true
+    });
+    loader.present();
+    this.eliteApi.getTournamentData(favourite.tournamentId)
+      .subscribe(t => this.nav.push(TeamHomePage, favourite.team));
+  }
+
+  goToTournaments() {
+    this.nav.push(TournamentsPage);
+  }
+
+  ionViewDidEnter(){
+    this.userSettings.getAllFavorites().then(favs => this.favourites = favs);
   }
 
 }

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { AlertController, NavController, NavParams, ToastController } from 'ionic-angular';
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import { GudikPage } from '../pages';
-import { EliteApi } from '../../shared/shared';
+import { GamePage } from '../pages';
+import { EliteApi, UserSettings } from '../../shared/shared';
 
 @Component({
   templateUrl: 'team-detail.page.html'
@@ -19,11 +19,12 @@ export class TeamDetailPage {
   useDateFilter = false;
 
   constructor(
-    private alertController: AlertController,
-    private nav: NavController,
-    private navParams: NavParams,
-    private toastController: ToastController,
-    private eliteApi: EliteApi) { }
+    public alertController: AlertController,
+    public nav: NavController,
+    public navParams: NavParams,
+    public toastController: ToastController,
+    public eliteApi: EliteApi,
+    public userSettings: UserSettings) { }
 
   ionViewDidLoad() {
     this.team = this.navParams.data;
@@ -48,6 +49,7 @@ export class TeamDetailPage {
     
     this.allGames = this.games;
     this.teamStanding = _.find(this.tourneyData.standings, { 'teamId': this.team.id });
+    this.userSettings.isFavoriteTeam(this.team.id).then(value => this.isFollowing = value);
   }
 
   getScoreDisplay(isTeam1, team1Score, team2Score) {
@@ -64,7 +66,7 @@ export class TeamDetailPage {
   
   gameClicked($event, game){
     let sourceGame = this.tourneyData.games.find(g => g.id === game.gameId);
-    this.nav.parent.parent.push(GudikPage, sourceGame);
+    this.nav.parent.parent.push(GamePage, sourceGame);
   }
 
   getScoreWorL(game) {
@@ -93,7 +95,7 @@ export class TeamDetailPage {
             text: 'Yes',
             handler: () => {
               this.isFollowing = false;
-              // TODO: persist data
+              this.userSettings.unfavoriteTeam(this.team);
 
               let toast = this.toastController.create({
                 message: 'You have unfollowed this team.',
@@ -109,7 +111,18 @@ export class TeamDetailPage {
       confirm.present();
     } else {
       this.isFollowing = true;
-      // TODO: persist data
+      this.userSettings.favoriteTeam(
+        this.team, 
+        this.tourneyData.tournament.id, 
+        this.tourneyData.tournament.name); 
+
     }
+  }
+
+  refreshAll(refresher){
+    this.eliteApi.refreshCurrentTourney().subscribe(() => {
+      refresher.complete();
+      this.ionViewDidLoad();
+    });
   }
 }

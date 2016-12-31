@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { IonicApp, IonicModule } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { GudikPage, GamePage, MapPage, MyTeamsPage, StandingsPage, TeamDetailPage, TeamHomePage, TeamsPage, TournamentsPage } from '../pages/pages';
-import { EliteApi } from '../shared/shared';
+import { EliteApi, UserSettings } from '../shared/shared';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,10 @@ import { EliteApi } from '../shared/shared';
     TeamsPage,
     TournamentsPage
   ],
-  providers: [EliteApi]
+  providers: [
+    EliteApi,
+    Storage,
+    UserSettings
+     ]
 })
 export class AppModule {}
