@@ -9,6 +9,7 @@ import { EliteApi } from '../../shared/shared';
 })
 export class StandingsPage {
   allStandings: any[];
+  divisionFilter = 'division';
   standings: any[];
   team: any;
 
@@ -32,6 +33,16 @@ export class StandingsPage {
     console.log('standings:', this.standings); 
     //console.log('division Standings', this.allStandings);
     this.allStandings = tourneyData.standings;
+
+    this.filterDivision();
+  }
+
+  filterDivision(){
+    if(this.divisionFilter === 'all'){
+      this.standings = this.allStandings;
+    } else {
+      this.standings = _.filter(this.allStandings, s => s.division === this.team.division);
+    }
   }
 
   getHeader(record, recordIndex, records){
