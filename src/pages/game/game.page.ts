@@ -3,7 +3,6 @@ import { NavController, NavParams } from 'ionic-angular';
 
 import { MapPage, TeamHomePage } from '../pages';
 import { EliteApi } from '../../shared/shared';
-declare var window: any;
 
 @Component({
   templateUrl: 'game.page.html',
@@ -28,9 +27,6 @@ export class GamePage {
   }
 
   goToDirections(){
-    let tourneyData = this.eliteApi.getCurrentTourney();
-    let location = tourneyData.locations[this.game.locationId];
-    window.location = `geo:${location.latitude},${location.longitude};u=35;`;
   }
 
   goToMap(){
@@ -38,7 +34,6 @@ export class GamePage {
   }
 
   isWinner(score1, score2){
-    //return Number(score1) > Number(score2);
     return Number(score1) > Number(score2) ? 'secondary' : '';
   }
 }

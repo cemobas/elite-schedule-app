@@ -1,21 +1,31 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavParams } from 'ionic-angular';
 
-/*
-  Generated class for the Map page.
+import { EliteApi } from '../../shared/shared';
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   templateUrl: 'map.page.html'
 })
 export class MapPage {
 
-  constructor(public nav: NavController) {}
+  map: any = {};
+
+  constructor(public navParams: NavParams, public eliteApi: EliteApi) {
+
+  }
 
   ionViewDidLoad() {
-    console.log('Hello MapPage Page');
+    let games = this.navParams.data;
+    let tourneyData = this.eliteApi.getCurrentTourney();
+    let location = tourneyData.locations[games.locationId];
+
+    this.map = {
+      lat: location.latitude,
+      lng: location.longitude,
+      zoom: 12,
+      markerLabel: games.location 
+    };
+
   }
 
 }

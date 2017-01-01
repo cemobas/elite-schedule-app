@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { AgmCoreModule } from 'angular2-google-maps/core'
 import { MyApp } from './app.component';
 import { GudikPage, GamePage, MapPage, MyTeamsPage, StandingsPage, TeamDetailPage, TeamHomePage, TeamsPage, TournamentsPage } from '../pages/pages';
 import { EliteApi, UserSettings } from '../shared/shared';
@@ -21,7 +22,8 @@ import { EliteApi, UserSettings } from '../shared/shared';
   ],
   imports: [
     IonicModule.forRoot(MyApp),
-    HttpModule
+    HttpModule,
+    AgmCoreModule.forRoot({ apiKey: 'AIzaSyBbsOlMryAHu2ESwHHSwrDBIUU7fiENNoM'})
   ],
   bootstrap: [IonicApp],
   entryComponents: [
